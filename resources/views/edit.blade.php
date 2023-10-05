@@ -22,14 +22,15 @@
     @endif
 
     <h1> Book {{$book->title}} </h1>
-    @if ($collaborators->count() > 0)
     <h2>Collaborators</h2>
+    @if ($collaborators->count() > 0)
     <table class="table">
     @foreach($collaborators as $collaborator)
         <tr><td>{{ $collaborator->name }}</td><td><form method="post" action="{{ route('book.unset_collab', ['id' => $book->id])}}">@csrf<input type="hidden" name="user_id" value="{{ $collaborator->id }}"><button type="submit">{{ __('Strike out') }}</button></form></td></tr>
     @endforeach
     </table>
-    @if (isset($book->id))
+    @endif
+    @if ($book->owned() && isset($book->id) && !empty($users))
     <h3>Add new</h3>
     <form method="post" action="{{ route('book.set_collab', ['id' => $book->id])}}">@csrf
         {{-- Normally, this should be an autocomplete (less secure) or text field (secure but fiddly). --}}
@@ -40,7 +41,6 @@
         </select>
         <button type="submit">{{ __('Add') }}</button>
     </form>
-    @endif
 @endif
     <h2>Sections</h2>
     <p>Sections can be edited by any collaborators. @if($book->owned())But only you can add or delete them.@endif</p>
@@ -57,7 +57,7 @@
     <form method="post" action="{{ route('section.create') }}">@csrf
         @include('sections.form', [
             'section' => new App\Models\Section(),
-            'sections' => $sections
+            'sections' => $sections,
         ])
     </form>
     @endif

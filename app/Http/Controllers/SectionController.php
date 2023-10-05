@@ -21,8 +21,12 @@ class SectionController extends Controller
         } else {
             $book = $section->book;
         }
-        if (!$section->is_editable) {
+        if ($section->id > 0 && !$section->is_editable) {
             return redirect(route('book.edit', ['id' => $section->book_id]))->with('error', __('Section is not editable.'));
+        }
+        if ($section->id === 0 && !$book->owned()) {
+            // Cannot add new sections. Fine to edit the existing ones, however.
+            throw new \Exception('Insufficient rights.');
         }
         if ($request->isMethod('POST')) {
             // fills parent_id here
@@ -54,6 +58,10 @@ class SectionController extends Controller
         $book_id = $section->book_id;
         if (!$section->is_editable) {
             return redirect(route('book.edit', ['id' => $book_id]))->with('error', __('Section is not editable.'));
+        }
+        $book = Book::findOrFail($book_id);
+        if (!$book->owned()) {
+            throw new \Exception('Insufficient rights.');
         }
         $section->delete();
         return redirect(route('book.edit', ['id' => $book_id]))->with('success', __('Section was deleted successfully.'));

@@ -22,7 +22,6 @@
     @endif
 
     <h1> Section {{$section->title}} </h1>
-    <p>Order: {{ $section->order }}</p>
     {{ $section->content }}
 
     <form method="post">@csrf

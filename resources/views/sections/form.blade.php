@@ -6,9 +6,7 @@
 <input type="text" name="title" value="{{$section->title}}" placeholder="Title" />
 <select name="parent_id">
     @foreach($sections as $s)
-        @if ($s->id !== $section->id)
-            <option value="{{$s->id}}">{{$s->title}}</option>
-        @endif
+        @include('sections._select', ['section' => $s, 'skip' => $section->id])
     @endforeach
 </select>
 <textarea name="content" placeholder="Section content">{{$section->content}}</textarea>

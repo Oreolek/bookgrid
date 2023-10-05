@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -23,8 +24,14 @@ class BookController extends Controller
     }
 
     public function view(int $id = 0) {
-        $book = Book::findOrFail($id);
-        return view('view', ['book' => $book]);
+        $cache = Cache::get('book_'.$id);
+        if ($cache) {
+            return $cache;
+        }
+        $book = Book::with('sections')->findOrFail($id);
+        $html = view('view', ['book' => $book]);
+        $cache = Cache::put('book_'.$id, (string) $html);
+        return $html;
     }
 
     public function edit(Request $request, int $id = 0) {
@@ -59,6 +66,9 @@ class BookController extends Controller
 
     public function delete(Request $request, int $id = 0) {
         $book = Book::findOrFail($id);
+        if (!$book->owned()) {
+            throw new \Exception('Insufficient rights.');
+        }
         $book->sections()->delete();
         $book->delete();
         return redirect('dashboard')->with('success', __('Book was deleted successfully.'));
@@ -66,6 +76,9 @@ class BookController extends Controller
 
     public function add_collab(Request $request, int $id) {
         $book = Book::findOrFail($id);
+        if (!$book->owned()) {
+            throw new \Exception('Insufficient rights.');
+        }
         $user_id = (int) $request->input('user_id');
         $user = User::findOrFail($user_id);
         if (!$book->collaborators()->where('books_collaborators.user_id', $user_id)->exists()) {
@@ -76,6 +89,9 @@ class BookController extends Controller
 
     public function remove_collab(Request $request, int $id) {
         $book = Book::findOrFail($id);
+        if (!$book->owned()) {
+            throw new \Exception('Insufficient rights.');
+        }
         $user_id = (int) $request->input('user_id');
         $user = User::findOrFail($user_id);
         if ($book->collaborators()->where('books_collaborators.user_id', $user_id)->exists()) {
