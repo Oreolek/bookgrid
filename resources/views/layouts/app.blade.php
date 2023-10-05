@@ -17,6 +17,9 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
+            @if (session()->has('success'))
+                <blockquote class="success">{{ session()->get('success')}}</blockquote>
+            @endif
 
             <!-- Page Heading -->
             @if (isset($header))

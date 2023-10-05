@@ -9,6 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if ($books->count() > 0)
                     <table class="table">
                         <thead>
                             <tr>
@@ -24,11 +25,26 @@
                                 <td> {{ $book->title }}</td>
                                 <td> @if ($book->user->id === Auth::user()->id) You @else {{ $book->user->name }} @endif</td>
                                 <td> {{ $book->sections()->count() }}</td>
-                                <td><a href="">Edit</a><a href="">Delete</a></td>
+                                <td>
+                                    <a href="{{ route('book.edit', ['id' => $book->id])}}">Edit</a>
+                                    <form method="POST" action=" {{ route('book.delete', ['id' => $book->id])}}">@csrf <button type="submit">Delete</button></form>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+                    {{ $books->links() }}
+                    @endif
+
+                    @if (Auth::user())
+                        <h3>Create a new book</h3>
+                        <form method=POST action="{{ route('book.create') }}">@csrf
+                            <input type="text" name="title" placeholder="Title" />
+                            <button type="submit"> {{ __('Add a new book') }} </button>
+                        </form>
+                    @else
+                        {{ __('Please log in to start.') }}
+                    @endif
                 </div>
             </div>
         </div>
