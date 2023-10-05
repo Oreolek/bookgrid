@@ -22,12 +22,14 @@
     @endif
 
     <h1> Book {{$book->title}} </h1>
+    @if ($collaborators->count() > 0)
     <h2>Collaborators</h2>
     <table class="table">
     @foreach($collaborators as $collaborator)
-        <tr><td>{{ $collaborator->name }}</td><td><form method="post" action="{{ route('book.unset_collab', ['id' => $book->id])}}">@csrf<input type="hidden" name="user_id" value="{{ $collaborator->id }}"><button type="submit">Strike out</button></form></td></tr>
+        <tr><td>{{ $collaborator->name }}</td><td><form method="post" action="{{ route('book.unset_collab', ['id' => $book->id])}}">@csrf<input type="hidden" name="user_id" value="{{ $collaborator->id }}"><button type="submit">{{ __('Strike out') }}</button></form></td></tr>
     @endforeach
     </table>
+    @if (isset($book->id))
     <h3>Add new</h3>
     <form method="post" action="{{ route('book.set_collab', ['id' => $book->id])}}">@csrf
         {{-- Normally, this should be an autocomplete (less secure) or text field (secure but fiddly). --}}
@@ -36,10 +38,27 @@
                 <option value="{{$user->id}}"> {{ $user->name }} </option>
             @endforeach
         </select>
-        <button type="submit">Add</button>
+        <button type="submit">{{ __('Add') }}</button>
     </form>
+    @endif
+@endif
     <h2>Sections</h2>
-    <p>Sections can be edited by any collaborators.</p>
+    <p>Sections can be edited by any collaborators. @if($book->owned())But only you can add or delete them.@endif</p>
+    <ul>
     @foreach($sections as $section)
+        <li>
+            @include('sections.single', ['section' => $section])
+            @include('sections.index', ['sections' => $section->children])
+        </li>
     @endforeach
+    </ul>
+    @if ($book->owned())
+    <h3>Add new section</h3>
+    <form method="post" action="{{ route('section.create') }}">@csrf
+        @include('sections.form', [
+            'section' => new App\Models\Section(),
+            'sections' => $sections
+        ])
+    </form>
+    @endif
 @endsection

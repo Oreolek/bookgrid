@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Section;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Fureev\Trees\Migrate;
 
 return new class extends Migration
 {
@@ -29,11 +31,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('title');
+            $table->boolean('is_editable')->default(true);
             // Assume books hold sections, sections hold text content.
             $table->text('content');
             $table->foreignId('book_id')->constrained();
-            $table->unsignedInteger('order')->default(0);
-            $table->nestedSet();
+            Migrate::columns($table, (new Section())->getTreeConfig());
         });
     }
 

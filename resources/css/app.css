@@ -4,3 +4,6 @@
 a,button[type=submit] {
     text-decoration: underline;
 }
+ul {
+    padding-left: 1em;
+}

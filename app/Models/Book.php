@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Book extends Model
 {
@@ -32,5 +34,9 @@ class Book extends Model
             ->orWhereHas('collaborators', function(Builder $query) use ($user_id) {
                 $query->where('user_id', $user_id);
             });
+    }
+
+    public function owned() {
+        return $this->user_id === (int) Auth::user()->id;
     }
 }

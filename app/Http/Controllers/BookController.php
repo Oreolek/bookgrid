@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Section;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -21,6 +22,11 @@ class BookController extends Controller
         ]);
     }
 
+    public function view(int $id = 0) {
+        $book = Book::findOrFail($id);
+        return view('view', ['book' => $book]);
+    }
+
     public function edit(Request $request, int $id = 0) {
         if ($id > 0) {
             $book = Book::findOrFail($id);
@@ -31,12 +37,21 @@ class BookController extends Controller
         if ($request->isMethod('POST')) {
             $book->fill($request->all());
             $book->save();
+            if ($book->sections()->count() === 0) {
+                $section = new Section();
+                $section->book_id = $book->id;
+                $section->title = 'Root section';
+                $section->content = '';
+                $section->is_editable = false;
+                $section->makeRoot();
+                $section->save();
+            }
             return redirect('dashboard')->with('success', __('Book was saved successfully.'));
         }
         $users = User::where('id', '!=', Auth::user()->id)->get();
         return view('edit', [
             'book' => $book,
-            'sections' => $book->sections,
+            'sections' => $book->sections()->where('parent_id', NULL)->get(),
             'collaborators' => $book->collaborators,
             'users' => $users,
         ]);
@@ -44,6 +59,7 @@ class BookController extends Controller
 
     public function delete(Request $request, int $id = 0) {
         $book = Book::findOrFail($id);
+        $book->sections()->delete();
         $book->delete();
         return redirect('dashboard')->with('success', __('Book was deleted successfully.'));
     }

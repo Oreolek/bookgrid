@@ -20,6 +20,9 @@
             @if (session()->has('success'))
                 <blockquote class="success">{{ session()->get('success')}}</blockquote>
             @endif
+            @if (session()->has('error'))
+                <blockquote class="error">{{ session()->get('error')}}</blockquote>
+            @endif
 
             <!-- Page Heading -->
             @if (isset($header))
