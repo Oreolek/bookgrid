@@ -1,0 +1,16 @@
+fail_fast: true
+repos:
+  - repo: git@github.com:justin-at-demac/pre-commit-php.git
+    rev: 3.0.1
+    hooks:
+    - id: php-lint
+    - id: php-no-var_dumps
+    - id: php-md
+      files: \.(php)$
+      args: ["codesize,controversial,design,naming,unusedcode"]
+    - id: php-stan
+      files: \.(php)$
+      args: ["--configuration=.phpstan.neon"]
+    - id: php-cs
+      files: \.(php)$
+      args: ["--standard=PSR12,PSR2", "--severity=10", "--extensions=php", "-p"]
