@@ -24,13 +24,8 @@ class BookController extends Controller
     }
 
     public function view(int $id = 0) {
-        $cache = Cache::get('book_'.$id);
-        if ($cache) {
-            return $cache;
-        }
         $book = Book::with('sections')->findOrFail($id);
         $html = view('view', ['book' => $book]);
-        $cache = Cache::put('book_'.$id, (string) $html);
         return $html;
     }
 

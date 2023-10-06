@@ -23,7 +23,7 @@
                         @foreach($books as $book)
                             <tr>
                                 <td> <a href="{{ route('book.view', ['id' => $book->id])}}">{{ $book->title }}</a></td>
-                                <td> @if ($book->user->id === Auth::user()->id) You @else {{ $book->user->name }} @endif</td>
+                                <td> @if ($book->owned()) You @else {{ $book->user->name }} @endif</td>
                                 <td> {{ $book->sections()->count() }}</td>
                                 <td>
                                     <a href="{{ route('book.edit', ['id' => $book->id])}}">Edit</a>
