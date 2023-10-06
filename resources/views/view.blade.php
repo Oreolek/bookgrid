@@ -12,7 +12,5 @@
 
 @section('content')
     <h1>{{ $book->title }}</h1>
-    @foreach($book->sections as $section)
-        @include('sections.view', ['sections' => $section->children])
-    @endforeach
+    {!! $view !!}
 @endsection

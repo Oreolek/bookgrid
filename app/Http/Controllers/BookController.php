@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Blade;
 
 class BookController extends Controller
 {
@@ -25,8 +26,17 @@ class BookController extends Controller
 
     public function view(int $id = 0) {
         $book = Book::with('sections')->findOrFail($id);
-        $html = view('view', ['book' => $book]);
-        return $html;
+        $view = Cache::get('book_'.$id);
+        if (!$view) {
+            $view = Blade::render('sections.view', [
+                'section' => $book->sections()->root()->first()
+            ]);
+            Cache::put('book_'.$id, $view);
+        }
+        return view('view', [
+            'book' => $book,
+            'view' => $view,
+        ]);
     }
 
     public function edit(Request $request, int $id = 0) {
@@ -39,6 +49,7 @@ class BookController extends Controller
         if ($request->isMethod('POST')) {
             $book->fill($request->all());
             $book->save();
+            Cache::delete('book_'.$id);
             if ($book->sections()->count() === 0) {
                 $section = new Section();
                 $section->book_id = $book->id;
@@ -66,6 +77,7 @@ class BookController extends Controller
         }
         $book->sections()->delete();
         $book->delete();
+        Cache::delete('book_'.$id);
         return redirect('dashboard')->with('success', __('Book was deleted successfully.'));
     }
 
