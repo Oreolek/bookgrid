@@ -5,6 +5,9 @@
 - you cannot reorder the sections on the same tree level, but you can move them around
 - There is a WYSIWYG editor, uploading images as base64 data
 - HTML is supported but sanitized
+- The book view is cached so performance is stable under guest load
+- Code is valid under PSR12 (see phpcs)
+- The repository has pre-commit hooks installed
 
 ### Installation
 
@@ -14,6 +17,7 @@
 - `./artisan migrate`
 - `pnpm install`
 - `pnpm run build`
+- `pre-commit install` if you want to use [pre-commit](https://pre-commit.com/)
 - Serve index.php in `public` folder.
 
 ### User scenario
