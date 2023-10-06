@@ -49,14 +49,16 @@
 
     <h2>Sections</h2>
     <p>Sections can be edited by any collaborators. @if($book->owned())But only you can add or delete them.@endif</p>
-    <ul>
-        @foreach($sections as $section)
+    @foreach($sections as $section)
+        @if (!$section->isRoot())
             <li>
-                @include('sections.single', ['section' => $section])
-                @include('sections.index', ['sections' => $section->children])
+            @include('sections.single', ['section' => $section])
+        @endif
+            @include('sections.index', ['sections' => $section->children])
+        @if (!$section->isRoot())
             </li>
-        @endforeach
-    </ul>
+        @endif
+    @endforeach
     @if ($book->owned())
         <h3>Add new section</h3>
         <form class="form" method="post" action="{{ route('section.create') }}">@csrf

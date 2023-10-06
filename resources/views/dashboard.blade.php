@@ -16,7 +16,7 @@
                     <tr>
                         <td> <a href="{{ route('book.view', ['id' => $book->id])}}">{{ $book->title }}</a></td>
                         <td> @if ($book->owned()) You @else {{ $book->user->name }} @endif</td>
-                        <td> {{ $book->sections()->count() }}</td>
+                        <td> {{ $book->sections()->count() - 1 }}</td>
                         <td>
                             <a class="btn btn-warning" href="{{ route('book.edit', ['id' => $book->id])}}">Edit</a>
                         </td>

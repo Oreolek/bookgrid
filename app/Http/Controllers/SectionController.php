@@ -29,13 +29,23 @@ class SectionController extends Controller
             throw new \Exception('Insufficient rights.');
         }
         if ($request->isMethod('POST')) {
-            // fills parent_id here
             $section->fill($request->all());
             if ($section->content === NULL) {
                 $section->content = '';
             }
             if (!$request->input('parent_id')) {
                 $section->makeRoot();
+            } else {
+                $parent_id = (int) $request->input('parent_id', $section->parent_id);
+                if ($parent_id === $id) {
+                    return redirect(route('section.edit', ['id' => $id]))->with('error', __('You tried to make a node a child of itself.'));
+                }
+                $parent = Section::findOrFail($parent_id);
+                if (!$parent->isChildOf($section)) {
+                    $section->appendTo($parent);
+                } else {
+                    session()->flash('error', __('You may not move a node under its own children.'));
+                }
             }
             $section->save();
             if (isset($book)) {
@@ -47,7 +57,7 @@ class SectionController extends Controller
         }
         return view('sections.edit', [
             'section' => $section,
-            'sections' => $book->sections,
+            'sections' => $book->sections()->root()->get(),
             'children' => $section->children,
             'book' => $book,
         ]);

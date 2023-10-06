@@ -14,7 +14,7 @@ class Section extends Model implements TreeConfigurable
     use HasFactory;
     use NestedSetTrait;
 
-    protected $guarded = ['id','_lft','_rgt'];
+    protected $guarded = ['id','lft','rgt','lvl','tree_id','parent_id'];
     protected $casts = [
         'content' => PurifyHtmlOnGet::class,
     ];

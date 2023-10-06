@@ -13,6 +13,6 @@
 @section('content')
     <h1>{{ $book->title }}</h1>
     @foreach($book->sections as $section)
-        <li>@include('sections.view', ['sections' => $section->children])</li>
+        @include('sections.view', ['sections' => $section->children])
     @endforeach
 @endsection

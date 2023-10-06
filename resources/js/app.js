@@ -1,5 +1,5 @@
 import './bootstrap';
-import {Alert, Button, Dropdown} from 'bootstrap';
+import {Alert, Button, Collapse, Dropdown} from 'bootstrap';
 
 /*
 import Alpine from 'alpinejs';

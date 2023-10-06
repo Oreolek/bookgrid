@@ -14,7 +14,10 @@
     <div class="col-sm-10">
         <select name="parent_id" class="form-select" id="sectionParent">
             @foreach($sections as $s)
-                @include('sections._select', ['section' => $s, 'skip' => $section->id])
+                @include('sections._select', [
+                    'current' => $section,
+                    'section' => $s,
+                ])
             @endforeach
         </select>
     </div>
@@ -41,5 +44,4 @@
     <script>
         var html = $('#content').summernote();
     </script>
-});
 @endpush
