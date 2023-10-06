@@ -1,9 +1,13 @@
 @extends('layouts.app')
 
-@section('header')
-    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        {{ __('Book Grid') }}
-    </h2>
+@section('header'){{ __('Book Grid') }}@endsection
+
+@section('breadcrumbs')
+    @if ($book->editable())
+        <x-nav-link :href="route('book.edit', ['id' => $book->id])">
+            {{ __('Edit book') }}
+        </x-nav-link>
+    @endif
 @endsection
 
 @section('content')

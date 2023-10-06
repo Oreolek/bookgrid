@@ -6,6 +6,12 @@
     </h2>
 @endsection
 
+@section('breadcrumbs')
+    <x-nav-link :href="route('book.edit', ['id' => $book->id])">
+        {{ __('Edit book') }}
+    </x-nav-link>
+@endsection
+
 @section('content')
     <h1> Section {{$section->title}} </h1>
     {!! $section->content !!}

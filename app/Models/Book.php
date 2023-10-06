@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,5 +37,11 @@ class Book extends Model
 
     public function owned() {
         return $this->user_id === (int) Auth::user()->id;
+    }
+
+    public function editable() {
+        if ($this->owned()) return true;
+        $user_id = (int) Auth::user()->id;
+        return $this->collaborators()->where('user_id', $user_id)->exists();
     }
 }
