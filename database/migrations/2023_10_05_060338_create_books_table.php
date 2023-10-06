@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('title');
             $table->boolean('is_editable')->default(true);
             // Assume books hold sections, sections hold text content.
-            $table->text('content');
+            $table->longText('content');
             $table->foreignId('book_id')->constrained();
             Migrate::columns($table, (new Section())->getTreeConfig());
         });
