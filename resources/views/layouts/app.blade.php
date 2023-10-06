@@ -19,10 +19,14 @@
             <div class="row">
                 <div class="col">
                     @if (session()->has('success'))
-                        <blockquote class="success">{{ session()->get('success')}}</blockquote>
+                        <div class="alert alert-success">
+                            {{ session()->get('success')}}
+                        </div>
                     @endif
                     @if (session()->has('error'))
-                        <blockquote class="error">{{ session()->get('error')}}</blockquote>
+                        <div class="alert alert-danger">
+                            {{ session()->get('error')}}
+                        </div>
                     @endif
 
                     @if (isset($header))

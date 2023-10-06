@@ -92,6 +92,6 @@ class BookController extends Controller
         if ($book->collaborators()->where('books_collaborators.user_id', $user_id)->exists()) {
             $book->collaborators()->detach($user_id);
         }
-        return redirect(route('book.edit', ['id' => $book->id]))->with('success', __("Added user #{$user->name} to collaborators."));
+        return redirect(route('book.edit', ['id' => $book->id]))->with('success', __("Removed user #{$user->name} from collaborators."));
     }
 }

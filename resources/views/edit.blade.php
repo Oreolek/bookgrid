@@ -12,7 +12,7 @@
     @if ($collaborators->count() > 0)
     <table class="table">
     @foreach($collaborators as $collaborator)
-        <tr><td>{{ $collaborator->name }}</td><td><form method="post" action="{{ route('book.unset_collab', ['id' => $book->id])}}">@csrf<input type="hidden" name="user_id" value="{{ $collaborator->id }}"><button type="submit">{{ __('Strike out') }}</button></form></td></tr>
+        <tr><td>{{ $collaborator->name }}</td><td><form method="post" action="{{ route('book.unset_collab', ['id' => $book->id])}}">@csrf<input type="hidden" name="user_id" value="{{ $collaborator->id }}"><x-danger-button>{{ __('Strike out') }}</x-danger-button></form></td></tr>
     @endforeach
     </table>
     @endif
